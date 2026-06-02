@@ -16,7 +16,7 @@ public class ReviewRepository {
     public ReviewRepository(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
         if (REVIEWS.isEmpty()) {
-            REVIEWS.add(new Review("rev-1", "b-completed", 5, "Phong sach, vi tri dep.", LocalDateTime.now().minusDays(20)));
+            REVIEWS.add(new Review("rev-1", "b-completed", 5, "Phòng sạch, vị trí đẹp.", LocalDateTime.now().minusDays(20)));
         }
     }
 

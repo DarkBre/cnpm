@@ -11,9 +11,9 @@ public class RoomRepository {
     private static final List<Room> ROOMS = new ArrayList<>();
 
     static {
-        ROOMS.add(new Room("r-pine", "h-dalat", "Pine View Deluxe", "Deluxe", 2, "Private balcony with pine hill view.", "", "AVAILABLE"));
-        ROOMS.add(new Room("r-family", "h-dalat", "Family Attic Suite", "Family", 4, "Warm attic suite for families.", "", "AVAILABLE"));
-        ROOMS.add(new Room("r-studio", "h-hanoi", "Old Quarter Studio", "Studio", 2, "Bright studio with kitchenette.", "", "AVAILABLE"));
+        ROOMS.add(new Room("r-pine", "h-dalat", "Phòng Deluxe nhìn đồi thông", "Deluxe", 2, "Ban công riêng nhìn ra đồi thông, phù hợp cho hai khách.", "", "AVAILABLE"));
+        ROOMS.add(new Room("r-family", "h-dalat", "Phòng áp mái gia đình", "Gia đình", 4, "Phòng áp mái ấm cúng dành cho gia đình.", "", "AVAILABLE"));
+        ROOMS.add(new Room("r-studio", "h-hanoi", "Studio Phố Cổ", "Studio", 2, "Studio sáng sủa, có bếp nhỏ và gần trung tâm.", "", "AVAILABLE"));
     }
 
     public List<Room> findAll(String keyword) {
@@ -58,7 +58,7 @@ public class RoomRepository {
     }
 
     public void delete(String id) {
-        Room room = findById(id).orElseThrow(() -> new IllegalArgumentException("Khong tim thay phong"));
+        Room room = findById(id).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy phòng"));
         room.status = "DELETED";
     }
 

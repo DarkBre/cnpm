@@ -12,15 +12,15 @@ import java.util.List;
 
 public class HomestayDetailView extends JDialog {
     public HomestayDetailView(Frame owner, Homestay homestay, List<Room> rooms) {
-        super(owner, "Chi tiet homestay", true);
+        super(owner, "Chi tiết homestay", true);
         JTextArea area = new JTextArea();
         area.setEditable(false);
-        area.append("Ten: " + homestay.name + "\n");
-        area.append("Dia chi: " + homestay.address + "\n");
-        area.append("Loai: " + homestay.type + "\n");
-        area.append("Trang thai: " + homestay.status + "\n");
-        area.append("Mo ta: " + homestay.description + "\n\n");
-        area.append("Phong:\n");
+        area.append("Tên: " + homestay.name + "\n");
+        area.append("Địa chỉ: " + homestay.address + "\n");
+        area.append("Loại: " + homestay.type + "\n");
+        area.append("Trạng thái: " + homestay.status + "\n");
+        area.append("Mô tả: " + homestay.description + "\n\n");
+        area.append("Phòng:\n");
         for (Room room : rooms) {
             area.append("- " + room + "\n");
         }

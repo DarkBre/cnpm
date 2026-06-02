@@ -10,10 +10,10 @@ import java.awt.Frame;
 
 public class LoginDialog extends CreateDialog {
     public LoginDialog(Frame owner, UserController userController, Runnable onDone) {
-        super(owner, "Dang nhap");
+        super(owner, "Đăng nhập");
         JTextField email = text("Email");
-        JPasswordField password = password("Mat khau");
-        JButton login = button("Dang nhap");
+        JPasswordField password = password("Mật khẩu");
+        JButton login = button("Đăng nhập");
         login.addActionListener(event -> {
             try {
                 userController.login(email.getText(), new String(password.getPassword()));

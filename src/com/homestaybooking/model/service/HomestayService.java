@@ -27,7 +27,7 @@ public class HomestayService {
     }
 
     public Homestay detail(String id) {
-        return homestayRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Khong tim thay homestay"));
+        return homestayRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy homestay"));
     }
 
     public Homestay create(String name, String address, String type, String description) {
@@ -63,13 +63,13 @@ public class HomestayService {
 
     private void requireManage(Homestay homestay) {
         if (!canManage(homestay)) {
-            throw new IllegalStateException("Khong co quyen quan ly homestay nay");
+            throw new IllegalStateException("Không có quyền quản lý homestay này");
         }
     }
 
     private void validate(String name, String address, String type) {
         if (name == null || name.isBlank() || address == null || address.isBlank() || type == null || type.isBlank()) {
-            throw new IllegalArgumentException("Ten, dia chi va loai homestay la bat buoc");
+            throw new IllegalArgumentException("Tên, địa chỉ và loại homestay là bắt buộc");
         }
     }
 }

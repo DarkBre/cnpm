@@ -11,14 +11,14 @@ import java.util.List;
 
 public class HomestayReviewListView extends JDialog {
     public HomestayReviewListView(Frame owner, List<Review> reviews) {
-        super(owner, "Danh sach danh gia", true);
+        super(owner, "Danh sách đánh giá", true);
         JTextArea area = new JTextArea();
         area.setEditable(false);
         for (Review review : reviews) {
             area.append(review + "\n");
         }
         if (reviews.isEmpty()) {
-            area.setText("Chua co danh gia.");
+            area.setText("Chưa có đánh giá.");
         }
         add(new JScrollPane(area), BorderLayout.CENTER);
         setSize(420, 280);

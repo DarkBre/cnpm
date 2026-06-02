@@ -26,6 +26,6 @@ public class Room {
 
     @Override
     public String toString() {
-        return name + " - " + type + " - " + capacity + " khach (" + status + ")";
+        return name + " - " + type + " - " + capacity + " khách (" + status + ")";
     }
 }

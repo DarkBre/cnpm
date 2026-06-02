@@ -27,15 +27,15 @@ public class ReviewService {
 
     public Review create(String bookingId, int rating, String comment) {
         User user = userService.requireLogin();
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new IllegalArgumentException("Khong tim thay booking"));
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy booking"));
         if (!booking.bookedBy.equals(user.id)) {
-            throw new IllegalStateException("Chi nguoi dat phong moi duoc danh gia");
+            throw new IllegalStateException("Chỉ người đặt phòng mới được đánh giá");
         }
         if (booking.status != BookingStatus.COMPLETED) {
-            throw new IllegalStateException("Chi booking da hoan tat moi duoc danh gia");
+            throw new IllegalStateException("Chỉ booking đã hoàn tất mới được đánh giá");
         }
         if (reviewRepository.findByBooking(bookingId).isPresent()) {
-            throw new IllegalStateException("Booking nay da co danh gia");
+            throw new IllegalStateException("Booking này đã có đánh giá");
         }
         validateRating(rating);
         return reviewRepository.save(new Review(null, bookingId, rating, comment, LocalDateTime.now()));
@@ -46,7 +46,7 @@ public class ReviewService {
         Review review = reviewRepository.findAll().stream()
                 .filter(item -> item.id.equals(reviewId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Khong tim thay danh gia"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy đánh giá"));
         review.rating = rating;
         review.comment = comment;
         review.reviewDate = LocalDateTime.now();
@@ -55,7 +55,7 @@ public class ReviewService {
 
     private void validateRating(int rating) {
         if (rating < 1 || rating > 5) {
-            throw new IllegalArgumentException("Rating phai tu 1 den 5");
+            throw new IllegalArgumentException("Rating phải từ 1 đến 5");
         }
     }
 }

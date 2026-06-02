@@ -12,8 +12,8 @@ public class HomestayRepository {
     private static final List<Homestay> HOMESTAYS = new ArrayList<>();
 
     static {
-        HOMESTAYS.add(new Homestay("h-dalat", "u-owner", "Da Lat Mountain Stay", "12 Tran Hung Dao, Da Lat", "Mountain Villa", "Cozy homestay near pine forest.", "", HomestayStatus.ACTIVE));
-        HOMESTAYS.add(new Homestay("h-hanoi", "u-owner", "Hanoi Old Quarter Loft", "25 Hang Bac, Ha Noi", "City Loft", "Compact loft near Hoan Kiem lake.", "", HomestayStatus.ACTIVE));
+        HOMESTAYS.add(new Homestay("h-dalat", "u-owner", "Homestay Núi Đà Lạt", "12 Trần Hưng Đạo, Đà Lạt", "Biệt thự núi", "Homestay ấm cúng gần rừng thông và chợ đêm.", "", HomestayStatus.ACTIVE));
+        HOMESTAYS.add(new Homestay("h-hanoi", "u-owner", "Căn hộ Phố Cổ Hà Nội", "25 Hàng Bạc, Hà Nội", "Căn hộ thành phố", "Căn hộ nhỏ gọn, thuận tiện di chuyển đến hồ Hoàn Kiếm.", "", HomestayStatus.ACTIVE));
     }
 
     public List<Homestay> findAll(String keyword) {
@@ -58,7 +58,7 @@ public class HomestayRepository {
     }
 
     public void delete(String id) {
-        Homestay homestay = findById(id).orElseThrow(() -> new IllegalArgumentException("Khong tim thay homestay"));
+        Homestay homestay = findById(id).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy homestay"));
         homestay.status = HomestayStatus.DELETED;
     }
 

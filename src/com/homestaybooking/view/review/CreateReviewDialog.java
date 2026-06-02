@@ -10,11 +10,11 @@ import java.awt.Frame;
 
 public class CreateReviewDialog extends CreateDialog {
     public CreateReviewDialog(Frame owner, ReviewController reviewController, Runnable onDone) {
-        super(owner, "Tao danh gia");
+        super(owner, "Tạo đánh giá");
         JTextField bookingId = text("Booking ID");
         JTextField rating = text("Rating 1-5");
-        JTextArea comment = area("Nhan xet");
-        JButton create = button("Tao danh gia");
+        JTextArea comment = area("Nhận xét");
+        JButton create = button("Tạo đánh giá");
         create.addActionListener(event -> {
             try {
                 reviewController.create(bookingId.getText(), parseInt(rating), comment.getText());

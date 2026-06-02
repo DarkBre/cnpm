@@ -102,7 +102,7 @@ public class CreateDialog extends JDialog {
     }
 
     protected void showError(Exception exception) {
-        JOptionPane.showMessageDialog(this, exception.getMessage(), "Loi", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, exception.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
     }
 
     private JLabel label(String text) {

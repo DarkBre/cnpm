@@ -73,10 +73,10 @@ public class HomeView extends JFrame {
     private final ReviewController reviewController;
 
     private final JLabel sessionLabel = new JLabel();
-    private final DefaultTableModel homestayModel = model("ID", "Ten", "Dia chi", "Loai", "Trang thai");
-    private final DefaultTableModel roomModel = model("ID", "Homestay", "Ten phong", "Loai", "Suc chua", "Trang thai");
-    private final DefaultTableModel bookingModel = model("ID", "Room", "Check-in", "Check-out", "So dem", "Tong tien", "Trang thai");
-    private final DefaultTableModel userModel = model("ID", "Ho ten", "Email", "Phone", "Role", "Status", "Balance");
+    private final DefaultTableModel homestayModel = model("ID", "Tên", "Địa chỉ", "Loại", "Trạng thái");
+    private final DefaultTableModel roomModel = model("ID", "Homestay", "Tên phòng", "Loại", "Sức chứa", "Trạng thái");
+    private final DefaultTableModel bookingModel = model("ID", "Phòng", "Check-in", "Check-out", "Số đêm", "Tổng tiền", "Trạng thái");
+    private final DefaultTableModel userModel = model("ID", "Họ tên", "Email", "Điện thoại", "Vai trò", "Trạng thái", "Số dư");
     private final JTable homestayTable = table(homestayModel);
     private final JTable roomTable = table(roomModel);
     private final JTable bookingTable = table(bookingModel);
@@ -120,7 +120,7 @@ public class HomeView extends JFrame {
         tabs.setFont(new Font("Segoe UI", Font.BOLD, 13));
         tabs.setBorder(BorderFactory.createEmptyBorder(8, 18, 18, 18));
         tabs.addTab("Homestay", homestayPanel());
-        tabs.addTab("Phong", roomPanel());
+        tabs.addTab("Phòng", roomPanel());
         tabs.addTab("Booking", bookingPanel());
         tabs.addTab("User", userPanel());
         add(tabs, BorderLayout.CENTER);
@@ -140,11 +140,11 @@ public class HomeView extends JFrame {
         identity.add(title);
         identity.add(sessionLabel);
 
-        JButton login = button("Dang nhap", true);
-        JButton register = button("Dang ky", false);
-        JButton profile = button("Ho so", false);
-        JButton logout = button("Dang xuat", false);
-        JButton reload = button("Tai lai", false);
+        JButton login = button("Đăng nhập", true);
+        JButton register = button("Đăng ký", false);
+        JButton profile = button("Hồ sơ", false);
+        JButton logout = button("Đăng xuất", false);
+        JButton reload = button("Tải lại", false);
         login.addActionListener(event -> new LoginDialog(this, userController, this::refreshAll).setVisible(true));
         register.addActionListener(event -> new RegisterDialog(this, userController, this::refreshAll).setVisible(true));
         profile.addActionListener(event -> safe(() -> new UserProfile(this, userController, this::refreshAll).setVisible(true)));
@@ -172,26 +172,26 @@ public class HomeView extends JFrame {
 
     private JPanel homestayPanel() {
         JTextField keyword = input();
-        JButton search = button("Tim", true);
-        JButton create = button("Tao homestay", false);
-        JButton detail = button("Chi tiet", false);
+        JButton search = button("Tìm", true);
+        JButton create = button("Tạo homestay", false);
+        JButton detail = button("Chi tiết", false);
         search.addActionListener(event -> refreshHomestays(keyword.getText()));
         create.addActionListener(event -> safe(() -> new CreateHomestayDialog(this, homestayController, this::refreshAll).setVisible(true)));
         detail.addActionListener(event -> safe(() -> {
             Homestay homestay = selectedHomestay();
             new HomestayDetailView(this, homestay, roomController.byHomestay(homestay.id)).setVisible(true);
         }));
-        JPanel actions = toolbar("Tu khoa", keyword, search, create, detail);
+        JPanel actions = toolbar("Từ khóa", keyword, search, create, detail);
         return withActions(actions, tableScroll(homestayTable));
     }
 
     private JPanel roomPanel() {
         JTextField keyword = input();
-        JButton search = button("Tim", true);
-        JButton create = button("Tao phong", false);
-        JButton detail = button("Chi tiet", false);
-        JButton booking = button("Dat phong", false);
-        JButton review = button("Danh gia", false);
+        JButton search = button("Tìm", true);
+        JButton create = button("Tạo phòng", false);
+        JButton detail = button("Chi tiết", false);
+        JButton booking = button("Đặt phòng", false);
+        JButton review = button("Đánh giá", false);
         search.addActionListener(event -> refreshRooms(keyword.getText()));
         create.addActionListener(event -> safe(() -> new CreateRoomDialog(this, roomController, this::refreshAll).setVisible(true)));
         detail.addActionListener(event -> safe(() -> {
@@ -203,14 +203,14 @@ public class HomeView extends JFrame {
             new CreateBookingDialog(this, bookingController, room.id, this::refreshAll).setVisible(true);
         }));
         review.addActionListener(event -> safe(() -> new CreateReviewDialog(this, reviewController, this::refreshAll).setVisible(true)));
-        JPanel actions = toolbar("Tu khoa", keyword, search, create, detail, booking, review);
+        JPanel actions = toolbar("Từ khóa", keyword, search, create, detail, booking, review);
         return withActions(actions, tableScroll(roomTable));
     }
 
     private JPanel bookingPanel() {
-        JButton mine = button("Booking cua toi", true);
+        JButton mine = button("Booking của tôi", true);
         JButton owner = button("Booking owner/admin", false);
-        JButton cancel = button("Mo bang huy/hoan tat", false);
+        JButton cancel = button("Mở bảng hủy/hoàn tất", false);
         mine.addActionListener(event -> safe(this::refreshMyBookings));
         owner.addActionListener(event -> safe(this::refreshOwnerBookings));
         cancel.addActionListener(event -> safe(() -> new RoomBookingListView(this, bookingController, new ArrayList<>(bookings), this::refreshAll).setVisible(true)));
@@ -220,9 +220,9 @@ public class HomeView extends JFrame {
 
     private JPanel userPanel() {
         JTextField keyword = input();
-        JButton search = button("Tim user", true);
-        JButton lock = button("Khoa", false);
-        JButton unlock = button("Mo khoa", false);
+        JButton search = button("Tìm người dùng", true);
+        JButton lock = button("Khóa", false);
+        JButton unlock = button("Mở khóa", false);
         search.addActionListener(event -> safe(() -> refreshUsers(keyword.getText())));
         lock.addActionListener(event -> safe(() -> {
             userController.lockUser(selectedUser().id);
@@ -232,7 +232,7 @@ public class HomeView extends JFrame {
             userController.unlockUser(selectedUser().id);
             refreshUsers(keyword.getText());
         }));
-        JPanel actions = toolbar("Tu khoa", keyword, search, lock, unlock);
+        JPanel actions = toolbar("Từ khóa", keyword, search, lock, unlock);
         return withActions(actions, tableScroll(userTable));
     }
 
@@ -272,9 +272,9 @@ public class HomeView extends JFrame {
     private void refreshAll() {
         User user = userController.currentUser();
         if (user == null) {
-            sessionLabel.setText("Guest - co the xem homestay/phong, dang ky hoac dang nhap de dat phong");
+            sessionLabel.setText("Khách - có thể xem homestay/phòng, đăng ký hoặc đăng nhập để đặt phòng");
         } else {
-            sessionLabel.setText(user.fullname + " | " + user.role + " | Balance: " + formatMoney(user.balance));
+            sessionLabel.setText(user.fullname + " | " + user.role + " | Số dư: " + formatMoney(user.balance));
         }
         refreshHomestays("");
         refreshRooms("");
@@ -351,7 +351,7 @@ public class HomeView extends JFrame {
     private <T> T selected(JTable table, List<T> values) {
         int row = table.getSelectedRow();
         if (row < 0) {
-            throw new IllegalStateException("Can chon mot dong truoc");
+            throw new IllegalStateException("Cần chọn một dòng trước");
         }
         int modelRow = table.convertRowIndexToModel(row);
         return values.get(modelRow);
@@ -418,7 +418,7 @@ public class HomeView extends JFrame {
         try {
             action.run();
         } catch (Exception exception) {
-            JOptionPane.showMessageDialog(this, exception.getMessage(), "Loi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, exception.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 

@@ -10,13 +10,13 @@ import java.awt.Frame;
 
 public class UserProfile extends CreateDialog {
     public UserProfile(Frame owner, UserController userController, Runnable onDone) {
-        super(owner, "Ho so ca nhan");
+        super(owner, "Hồ sơ cá nhân");
         User user = userController.currentUser();
-        JTextField fullname = text("Ho ten");
+        JTextField fullname = text("Họ tên");
         JTextField email = text("Email");
-        JTextField phone = text("So dien thoai");
-        JTextField dob = text("Ngay sinh yyyy-MM-dd");
-        JTextField role = text("Role");
+        JTextField phone = text("Số điện thoại");
+        JTextField dob = text("Ngày sinh yyyy-MM-dd");
+        JTextField role = text("Vai trò");
         if (user != null) {
             fullname.setText(user.fullname);
             email.setText(user.email);
@@ -25,7 +25,7 @@ public class UserProfile extends CreateDialog {
             role.setText(user.role.name());
             role.setEditable(false);
         }
-        JButton save = button("Luu");
+        JButton save = button("Lưu");
         save.addActionListener(event -> {
             try {
                 userController.updateProfile(fullname.getText(), email.getText(), phone.getText(), parseDate(dob));

@@ -14,9 +14,9 @@ public class UserRepository {
     private static final List<User> USERS = new ArrayList<>();
 
     static {
-        USERS.add(new User("u-admin", "System Admin", "admin@homestay.local", "123456", "0901000001", LocalDate.of(1990, 1, 15), UserRole.ADMIN, UserStatus.ACTIVE, 0));
-        USERS.add(new User("u-owner", "Nguyen Minh Owner", "owner@homestay.local", "123456", "0902000002", LocalDate.of(1987, 5, 20), UserRole.OWNER, UserStatus.ACTIVE, 3200000));
-        USERS.add(new User("u-customer", "Le An Customer", "customer@homestay.local", "123456", "0904000004", LocalDate.of(1998, 4, 12), UserRole.CUSTOMER, UserStatus.ACTIVE, 3020000));
+        USERS.add(new User("u-admin", "Quản trị hệ thống", "admin@homestay.local", "123456", "0901000001", LocalDate.of(1990, 1, 15), UserRole.ADMIN, UserStatus.ACTIVE, 0));
+        USERS.add(new User("u-owner", "Nguyễn Minh Chủ nhà", "owner@homestay.local", "123456", "0902000002", LocalDate.of(1987, 5, 20), UserRole.OWNER, UserStatus.ACTIVE, 3200000));
+        USERS.add(new User("u-customer", "Lê An Khách hàng", "customer@homestay.local", "123456", "0904000004", LocalDate.of(1998, 4, 12), UserRole.CUSTOMER, UserStatus.ACTIVE, 3020000));
     }
 
     public List<User> findAll(String keyword) {
@@ -54,7 +54,7 @@ public class UserRepository {
     }
 
     public void updateBalance(String userId, long balance) {
-        User user = findById(userId).orElseThrow(() -> new IllegalArgumentException("Khong tim thay user"));
+        User user = findById(userId).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng"));
         user.balance = Math.max(0, balance);
     }
 

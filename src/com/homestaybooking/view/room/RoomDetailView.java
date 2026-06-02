@@ -12,15 +12,15 @@ import java.util.List;
 
 public class RoomDetailView extends JDialog {
     public RoomDetailView(Frame owner, Room room, List<Review> reviews) {
-        super(owner, "Chi tiet phong", true);
+        super(owner, "Chi tiết phòng", true);
         JTextArea area = new JTextArea();
         area.setEditable(false);
-        area.append("Ten: " + room.name + "\n");
-        area.append("Loai: " + room.type + "\n");
-        area.append("Suc chua: " + room.capacity + "\n");
-        area.append("Trang thai: " + room.status + "\n");
-        area.append("Mo ta: " + room.description + "\n\n");
-        area.append("Danh gia:\n");
+        area.append("Tên: " + room.name + "\n");
+        area.append("Loại: " + room.type + "\n");
+        area.append("Sức chứa: " + room.capacity + "\n");
+        area.append("Trạng thái: " + room.status + "\n");
+        area.append("Mô tả: " + room.description + "\n\n");
+        area.append("Đánh giá:\n");
         for (Review review : reviews) {
             area.append("- " + review + "\n");
         }

@@ -10,13 +10,13 @@ import java.awt.Frame;
 
 public class CreateRoomDialog extends CreateDialog {
     public CreateRoomDialog(Frame owner, RoomController roomController, Runnable onDone) {
-        super(owner, "Tao phong");
+        super(owner, "Tạo phòng");
         JTextField homestayId = text("Homestay ID");
-        JTextField name = text("Ten phong");
-        JTextField type = text("Loai phong");
-        JTextField capacity = text("Suc chua");
-        JTextArea description = area("Mo ta");
-        JButton create = button("Tao");
+        JTextField name = text("Tên phòng");
+        JTextField type = text("Loại phòng");
+        JTextField capacity = text("Sức chứa");
+        JTextArea description = area("Mô tả");
+        JButton create = button("Tạo");
         create.addActionListener(event -> {
             try {
                 roomController.create(homestayId.getText(), name.getText(), type.getText(), parseInt(capacity), description.getText());

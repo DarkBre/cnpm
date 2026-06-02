@@ -15,17 +15,17 @@ import java.util.List;
 
 public class RoomBookingListView extends JDialog {
     public RoomBookingListView(Frame owner, BookingController bookingController, List<Booking> bookings, Runnable onDone) {
-        super(owner, "Danh sach booking", true);
+        super(owner, "Danh sách booking", true);
         JTextArea area = new JTextArea();
         area.setEditable(false);
         for (Booking booking : bookings) {
             area.append(booking.id + " | " + booking + "\n");
         }
         if (bookings.isEmpty()) {
-            area.setText("Chua co booking.");
+            area.setText("Chưa có booking.");
         }
-        JButton cancel = new JButton("Huy theo ID");
-        JButton complete = new JButton("Hoan tat theo ID");
+        JButton cancel = new JButton("Hủy theo ID");
+        JButton complete = new JButton("Hoàn tất theo ID");
         cancel.addActionListener(event -> handle(owner, bookingController, true, onDone));
         complete.addActionListener(event -> handle(owner, bookingController, false, onDone));
         JPanel actions = new JPanel();
@@ -38,7 +38,7 @@ public class RoomBookingListView extends JDialog {
     }
 
     private void handle(Frame owner, BookingController bookingController, boolean cancel, Runnable onDone) {
-        String id = JOptionPane.showInputDialog(this, "Nhap Booking ID");
+        String id = JOptionPane.showInputDialog(this, "Nhập Booking ID");
         if (id == null || id.isBlank()) {
             return;
         }
@@ -51,7 +51,7 @@ public class RoomBookingListView extends JDialog {
             onDone.run();
             dispose();
         } catch (Exception exception) {
-            JOptionPane.showMessageDialog(owner, exception.getMessage(), "Loi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(owner, exception.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

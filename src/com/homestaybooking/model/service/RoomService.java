@@ -27,13 +27,13 @@ public class RoomService {
     }
 
     public Room detail(String id) {
-        return roomRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Khong tim thay phong"));
+        return roomRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy phòng"));
     }
 
     public Room create(String homestayId, String name, String type, int capacity, String description) {
-        Homestay homestay = homestayRepository.findById(homestayId).orElseThrow(() -> new IllegalArgumentException("Khong tim thay homestay"));
+        Homestay homestay = homestayRepository.findById(homestayId).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy homestay"));
         if (!homestayService.canManage(homestay)) {
-            throw new IllegalStateException("Khong co quyen tao phong cho homestay nay");
+            throw new IllegalStateException("Không có quyền tạo phòng cho homestay này");
         }
         validate(name, type, capacity);
         return roomRepository.save(new Room(null, homestayId, name.trim(), type.trim(), capacity, description, "", "AVAILABLE"));
@@ -41,9 +41,9 @@ public class RoomService {
 
     public Room update(String id, String name, String type, int capacity, String description, String status) {
         Room room = detail(id);
-        Homestay homestay = homestayRepository.findById(room.homestayId).orElseThrow(() -> new IllegalArgumentException("Khong tim thay homestay"));
+        Homestay homestay = homestayRepository.findById(room.homestayId).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy homestay"));
         if (!homestayService.canManage(homestay)) {
-            throw new IllegalStateException("Khong co quyen cap nhat phong nay");
+            throw new IllegalStateException("Không có quyền cập nhật phòng này");
         }
         validate(name, type, capacity);
         room.name = name.trim();
@@ -56,19 +56,19 @@ public class RoomService {
 
     public void delete(String id) {
         Room room = detail(id);
-        Homestay homestay = homestayRepository.findById(room.homestayId).orElseThrow(() -> new IllegalArgumentException("Khong tim thay homestay"));
+        Homestay homestay = homestayRepository.findById(room.homestayId).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy homestay"));
         if (!homestayService.canManage(homestay)) {
-            throw new IllegalStateException("Khong co quyen xoa phong nay");
+            throw new IllegalStateException("Không có quyền xóa phòng này");
         }
         roomRepository.delete(id);
     }
 
     private void validate(String name, String type, int capacity) {
         if (name == null || name.isBlank() || type == null || type.isBlank()) {
-            throw new IllegalArgumentException("Ten phong va loai phong la bat buoc");
+            throw new IllegalArgumentException("Tên phòng và loại phòng là bắt buộc");
         }
         if (capacity <= 0) {
-            throw new IllegalArgumentException("Suc chua phai lon hon 0");
+            throw new IllegalArgumentException("Sức chứa phải lớn hơn 0");
         }
     }
 }
