@@ -1,0 +1,11 @@
+,,,,,,,,,,,,
+,id,fullname,username,password,email,phone,dob,role,status,balance,created_at,updated_at
+,c42f2e37-65cf-418b-98b9-8d921429feb9,Ngô Đức Mạnh,manhnd.admin@gmail.com,manh1234,manhnd.admin@gmail.com,0432919386,31/05/2005,ADMIN,ACTIVE,0,,
+,7ba40d9a-1902-4c14-b141-d0cf5bd26f15,Nguyễn Đức Tuyên,tuyennd.admin@gmail.com,tuyen1234,tuyennd.admin@gmail.com,0592340527,11/05/2005,ADMIN,ACTIVE,0,,
+,9c771adb-b23f-48f4-9ce7-08a2624d8622,Nguyễn Đức Tấn,tannd.admin@gmail.com,tan1234,tannd.admin@gmail.com,0424967730,11/09/2005,ADMIN,ACTIVE,0,,
+,2f46dabb-ccac-4c6d-8386-614a8ef78dc4,Nguyễn Đức Minh,minhnd.customer@gmail.com,minh1234,minhnd.customer@gmail.com,0343967945,13/09/2005,CUSTOMER,ACTIVE,12000,,
+,dab27b11-cf73-4426-83f2-0be209cf75e1,Nguyễn Đức Tuấn,tuannd.customer@gmail.com,tuan1234,tuannd.customer@gmail.com,0904390225,13/11/2005,CUSTOMER,ACTIVE,120000,,
+,03d39cb4-e2d3-43e4-8375-f231cf47233c,Nguyễn Đức Tú,tund.customer@gmail.com,tu1234,tund.customer@gmail.com,0880404985,03/11/2005,OWNER,ACTIVE,1500000,,
+,e2edf048-36c8-45d3-a28d-cf2893cb7dab,Nguyễn Đức Hải,haind.owner@gmail.com,hai1234,haind.owner@gmail.com,0528270593,03/12/2005,OWNER,ACTIVE,122200,,
+,01d435b7-c36a-4037-a3cd-e88c26a4913a,Nguyễn Đức Tài,taind.customer@gmail.com,tai1234,taind.customer@gmail.com,0971749122,01/12/2005,CUSTOMER,ACTIVE,21213000,,
+,6877b61d-1dcf-44e8-9a94-e5fe7dd63209,Nguyễn Đức Toàn,toannd.owner@gmail.com,toan1234,toannd.owner@gmail.com,0430198559,01/02/2005,OWNER,ACTIVE,111000,,

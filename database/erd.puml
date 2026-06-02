@@ -1,0 +1,289 @@
+@startuml
+skinparam linetype ortho
+skinparam entityBackgroundColor #f8f4ee
+skinparam entityBorderColor #d8c8ba
+skinparam ArrowColor #6b5a4d
+skinparam Shadowing false
+hide methods
+hide stereotypes
+
+' =========================================================
+' USERS / WALLET
+' =========================================================
+
+entity "users" as users {
+  *id : CHAR(36) <<PK>>
+  --
+  fullname : VARCHAR(100)
+  password_hash : VARCHAR(255)
+  email : VARCHAR(100) <<UNIQUE>>
+  phone : VARCHAR(20)
+  dob : DATE
+  role : ENUM('ADMIN','CUSTOMER','OWNER')
+  status : ENUM('ACTIVE','LOCKED')
+  balance : BIGINT UNSIGNED
+  created_at : DATETIME
+  updated_at : DATETIME
+  locked_at : DATETIME <<NULL>>
+  unlocked_at : DATETIME <<NULL>>
+}
+
+entity "wallet_transactions" as wallet_transactions {
+  *id : CHAR(36) <<PK>>
+  --
+  user_id : CHAR(36) <<FK>>
+  booking_id : CHAR(36) <<FK, NULL>>
+  transaction_type : ENUM('DEPOSIT','PAYMENT','REFUND','OWNER_REVENUE','WITHDRAW')
+  amount : BIGINT
+  balance_before : BIGINT UNSIGNED
+  balance_after : BIGINT UNSIGNED
+  description : VARCHAR(255)
+  created_at : DATETIME
+}
+
+' =========================================================
+' CATALOG
+' =========================================================
+
+entity "homestays" as homestays {
+  *id : CHAR(36) <<PK>>
+  --
+  owner_id : CHAR(36) <<FK>>
+  name : VARCHAR(150)
+  address : VARCHAR(255)
+  type : VARCHAR(50)
+  description : TEXT
+  image_url : VARCHAR(500) <<NULL>>
+  status : ENUM('ACTIVE','INACTIVE','DELETED')
+  created_at : DATETIME
+  updated_at : DATETIME
+  deleted_at : DATETIME <<NULL>>
+}
+
+entity "rooms" as rooms {
+  *id : CHAR(36) <<PK>>
+  --
+  homestay_id : CHAR(36) <<FK>>
+  name : VARCHAR(100)
+  type : VARCHAR(50)
+  capacity : INT
+  description : TEXT
+  image_url : VARCHAR(500) <<NULL>>
+  status : ENUM('AVAILABLE','INACTIVE','MAINTENANCE')
+  created_at : DATETIME
+  updated_at : DATETIME
+  deleted_at : DATETIME <<NULL>>
+}
+
+entity "amenities" as amenities {
+  *id : CHAR(36) <<PK>>
+  --
+  name : VARCHAR(100) <<UNIQUE>>
+  description : TEXT
+  created_at : DATETIME
+  updated_at : DATETIME
+  deleted_at : DATETIME <<NULL>>
+}
+
+entity "room_amenities" as room_amenities {
+  *room_id : CHAR(36) <<PK, FK>>
+  *amenity_id : CHAR(36) <<PK, FK>>
+  --
+  assigned_at : DATETIME
+}
+
+' =========================================================
+' INVENTORY
+' =========================================================
+
+entity "pricing_schedules" as pricing_schedules {
+  *id : CHAR(36) <<PK>>
+  --
+  room_id : CHAR(36) <<FK>>
+  start_date : DATE
+  end_date : DATE
+  price_per_night : BIGINT UNSIGNED
+  created_at : DATETIME
+  updated_at : DATETIME
+  deleted_at : DATETIME <<NULL>>
+}
+
+entity "blocked_dates" as blocked_dates {
+  *id : CHAR(36) <<PK>>
+  --
+  room_id : CHAR(36) <<FK>>
+  start_date : DATE
+  end_date : DATE
+  reason : VARCHAR(255)
+  created_at : DATETIME
+}
+
+' =========================================================
+' RESERVATION / COMMERCE
+' =========================================================
+
+entity "vouchers" as vouchers {
+  *id : CHAR(36) <<PK>>
+  --
+  created_by : CHAR(36) <<FK>>
+  code : VARCHAR(50) <<UNIQUE>>
+  name : VARCHAR(150)
+  discount_type : ENUM('FIXED_AMOUNT','PERCENTAGE')
+  discount_value : BIGINT UNSIGNED
+  max_discount_amount : BIGINT UNSIGNED <<NULL>>
+  start_date : DATE
+  end_date : DATE
+  max_usage : INT
+  used_count : INT
+  min_order_value : BIGINT UNSIGNED
+  status : ENUM('ACTIVE','INACTIVE','EXPIRED')
+  created_at : DATETIME
+  updated_at : DATETIME
+  deleted_at : DATETIME <<NULL>>
+}
+
+entity "bookings" as bookings {
+  *id : CHAR(36) <<PK>>
+  --
+  booked_by : CHAR(36) <<FK>>
+  room_id : CHAR(36) <<FK>>
+  voucher_id : CHAR(36) <<FK, NULL>>
+  check_in_date : DATE
+  check_out_date : DATE
+  total_nights : INT
+  original_amount : BIGINT UNSIGNED
+  discount_amount : BIGINT UNSIGNED
+  total_amount : BIGINT UNSIGNED
+  cancellation_fee : BIGINT UNSIGNED
+  refund_amount : BIGINT UNSIGNED
+  cancelled_at : DATETIME <<NULL>>
+  status : ENUM('PENDING_PAYMENT','CONFIRMED','CANCELLED','COMPLETED')
+  created_at : DATETIME
+  updated_at : DATETIME
+  deleted_at : DATETIME <<NULL>>
+}
+
+entity "invoices" as invoices {
+  *id : CHAR(36) <<PK>>
+  --
+  booking_id : CHAR(36) <<FK, UNIQUE>>
+  subtotal : BIGINT UNSIGNED
+  discount_amount : BIGINT UNSIGNED
+  total_amount : BIGINT UNSIGNED
+  payment_method : ENUM('WALLET')
+  payment_status : ENUM('UNPAID','PAID','REFUNDED','FAILED')
+  payment_date : DATETIME <<NULL>>
+  settlement_status : ENUM('NOT_SETTLED','SETTLED','CANCELLED')
+  settled_at : DATETIME <<NULL>>
+  refunded_at : DATETIME <<NULL>>
+  created_at : DATETIME
+  updated_at : DATETIME
+  deleted_at : DATETIME <<NULL>>
+}
+
+entity "reviews" as reviews {
+  *id : CHAR(36) <<PK>>
+  --
+  booking_id : CHAR(36) <<FK, UNIQUE>>
+  rating : TINYINT UNSIGNED
+  comment : TEXT
+  review_date : DATETIME
+  updated_at : DATETIME
+  deleted_at : DATETIME <<NULL>>
+}
+
+' =========================================================
+' RELATIONSHIPS
+' =========================================================
+
+users ||--o{ homestays : owns
+users ||--o{ bookings : books
+users ||--o{ wallet_transactions : has_wallet_history
+users ||--o{ vouchers : creates
+
+homestays ||--o{ rooms : contains
+
+rooms ||--o{ room_amenities : has
+amenities ||--o{ room_amenities : assigned_to
+
+rooms ||--o{ pricing_schedules : priced_by
+rooms ||--o{ blocked_dates : blocked_on
+rooms ||--o{ bookings : reserved_in
+
+vouchers |o--o{ bookings : applied_to
+
+bookings ||--o| invoices : generates
+bookings ||--o| reviews : receives
+bookings |o--o{ wallet_transactions : related_to
+
+' =========================================================
+' BUSINESS NOTES
+' =========================================================
+
+note right of homestays
+  image_url:
+  - Link ảnh homestay từ URL ngoài
+  - Chỉ lưu String, không upload file
+  - Có thể NULL nếu chưa có ảnh
+end note
+
+note right of rooms
+  image_url:
+  - Link ảnh phòng từ URL ngoài
+  - Chỉ lưu String, không upload file
+  - Có thể NULL nếu chưa có ảnh
+end note
+
+note right of room_amenities
+  Bảng nối nhiều-nhiều giữa
+  rooms và amenities.
+
+  Một room có nhiều amenity.
+  Một amenity có thể gán cho
+  nhiều room.
+
+  assigned_at:
+  - Thời điểm gán tiện nghi vào phòng.
+end note
+
+note right of blocked_dates
+  Không lưu blocked_by.
+  Quyền block được kiểm tra bằng:
+  room -> homestay -> owner_id.
+end note
+
+note bottom of users
+  Khi đăng ký:
+  - role = CUSTOMER
+  - status = ACTIVE
+  - balance = 0
+  - locked_at = NULL
+  - unlocked_at = NULL
+
+  Khi khóa tài khoản:
+  - status = LOCKED
+  - locked_at = thời điểm khóa
+
+  Khi mở khóa tài khoản:
+  - status = ACTIVE
+  - unlocked_at = thời điểm mở khóa
+
+  Khi CUSTOMER tạo homestay đầu tiên:
+  - role được nâng thành OWNER
+  - thao tác nằm trong transaction
+end note
+
+note bottom of bookings
+  Booking không được overlap với:
+  - booking CONFIRMED khác của cùng room
+  - blocked_dates của cùng room
+
+  total_amount = original_amount - discount_amount
+end note
+
+note bottom of wallet_transactions
+  Mọi thay đổi users.balance
+  phải sinh wallet_transaction.
+end note
+
+@enduml
