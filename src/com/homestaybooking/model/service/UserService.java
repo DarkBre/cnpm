@@ -34,7 +34,8 @@ public class UserService {
             throw new IllegalArgumentException("Email đã tồn tại");
         }
         User user = new User(null, fullname.trim(), email.trim(), password, phone, dob, UserRole.CUSTOMER, UserStatus.ACTIVE, 0);
-        return userRepository.save(user);
+        currentUser = userRepository.save(user);
+        return currentUser;
     }
 
     public void logout() {

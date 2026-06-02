@@ -72,7 +72,14 @@ public class HomeView extends JFrame {
     private final BookingController bookingController;
     private final ReviewController reviewController;
 
+    private final JPanel contentPanel = new JPanel(new BorderLayout());
     private final JLabel sessionLabel = new JLabel();
+    private JButton loginButton;
+    private JButton registerButton;
+    private JButton profileButton;
+    private JButton logoutButton;
+    private JButton reloadButton;
+
     private final DefaultTableModel homestayModel = model("ID", "Tên", "Địa chỉ", "Loại", "Trạng thái");
     private final DefaultTableModel roomModel = model("ID", "Homestay", "Tên phòng", "Loại", "Sức chứa", "Trạng thái");
     private final DefaultTableModel bookingModel = model("ID", "Phòng", "Check-in", "Check-out", "Số đêm", "Tổng tiền", "Trạng thái");
@@ -114,16 +121,9 @@ public class HomeView extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         getContentPane().setBackground(BACKGROUND);
+        contentPanel.setBackground(BACKGROUND);
         add(header(), BorderLayout.NORTH);
-
-        JTabbedPane tabs = new JTabbedPane();
-        tabs.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        tabs.setBorder(BorderFactory.createEmptyBorder(8, 18, 18, 18));
-        tabs.addTab("Homestay", homestayPanel());
-        tabs.addTab("Phòng", roomPanel());
-        tabs.addTab("Booking", bookingPanel());
-        tabs.addTab("User", userPanel());
-        add(tabs, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
         refreshAll();
     }
 
@@ -140,27 +140,27 @@ public class HomeView extends JFrame {
         identity.add(title);
         identity.add(sessionLabel);
 
-        JButton login = button("Đăng nhập", true);
-        JButton register = button("Đăng ký", false);
-        JButton profile = button("Hồ sơ", false);
-        JButton logout = button("Đăng xuất", false);
-        JButton reload = button("Tải lại", false);
-        login.addActionListener(event -> new LoginDialog(this, userController, this::refreshAll).setVisible(true));
-        register.addActionListener(event -> new RegisterDialog(this, userController, this::refreshAll).setVisible(true));
-        profile.addActionListener(event -> safe(() -> new UserProfile(this, userController, this::refreshAll).setVisible(true)));
-        logout.addActionListener(event -> {
+        loginButton = button("Đăng nhập", true);
+        registerButton = button("Đăng ký", false);
+        profileButton = button("Hồ sơ", false);
+        logoutButton = button("Đăng xuất", false);
+        reloadButton = button("Tải lại", false);
+        loginButton.addActionListener(event -> openLogin());
+        registerButton.addActionListener(event -> openRegister());
+        profileButton.addActionListener(event -> safe(() -> new UserProfile(this, userController, this::refreshAll).setVisible(true)));
+        logoutButton.addActionListener(event -> {
             userController.logout();
             refreshAll();
         });
-        reload.addActionListener(event -> refreshAll());
+        reloadButton.addActionListener(event -> refreshAll());
 
         JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         actions.setOpaque(false);
-        actions.add(login);
-        actions.add(register);
-        actions.add(profile);
-        actions.add(logout);
-        actions.add(reload);
+        actions.add(loginButton);
+        actions.add(registerButton);
+        actions.add(profileButton);
+        actions.add(logoutButton);
+        actions.add(reloadButton);
 
         JPanel panel = new JPanel(new BorderLayout(16, 0));
         panel.setBackground(PRIMARY_DARK);
@@ -170,7 +170,63 @@ public class HomeView extends JFrame {
         return panel;
     }
 
-    private JPanel homestayPanel() {
+    private JPanel authPanel() {
+        JLabel title = new JLabel("Vui lòng đăng nhập hoặc đăng ký");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        title.setForeground(TEXT);
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JLabel description = new JLabel("<html><div style='text-align:center;'>Ứng dụng chỉ mở các chức năng sau khi xác thực tài khoản.<br>Menu sẽ thay đổi theo quyền CUSTOMER, OWNER hoặc ADMIN.</div></html>");
+        description.setFont(BODY_FONT);
+        description.setForeground(MUTED);
+        description.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JButton login = button("Đăng nhập", true);
+        JButton register = button("Đăng ký tài khoản", false);
+        login.addActionListener(event -> openLogin());
+        register.addActionListener(event -> openRegister());
+
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        actions.setOpaque(false);
+        actions.add(login);
+        actions.add(register);
+
+        JLabel accounts = new JLabel("<html><div style='text-align:center;'>Tài khoản mẫu:<br>admin@homestay.local / 123456<br>owner@homestay.local / 123456<br>customer@homestay.local / 123456</div></html>");
+        accounts.setFont(BODY_FONT);
+        accounts.setForeground(MUTED);
+        accounts.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JPanel card = new JPanel(new GridLayout(0, 1, 0, 16));
+        card.setBackground(SURFACE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(226, 232, 240)),
+                BorderFactory.createEmptyBorder(34, 38, 34, 38)
+        ));
+        card.add(title);
+        card.add(description);
+        card.add(actions);
+        card.add(accounts);
+
+        JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 90));
+        wrapper.setBackground(BACKGROUND);
+        wrapper.add(card);
+        return wrapper;
+    }
+
+    private JTabbedPane roleTabs(User user) {
+        JTabbedPane tabs = new JTabbedPane();
+        tabs.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        tabs.setBorder(BorderFactory.createEmptyBorder(8, 18, 18, 18));
+        tabs.addTab("Homestay", homestayPanel(user));
+        tabs.addTab("Phòng", roomPanel(user));
+        tabs.addTab("Booking", bookingPanel(user));
+        if (user.role == UserRole.ADMIN) {
+            tabs.addTab("Người dùng", userPanel());
+        }
+        return tabs;
+    }
+
+    private JPanel homestayPanel(User user) {
         JTextField keyword = input();
         JButton search = button("Tìm", true);
         JButton create = button("Tạo homestay", false);
@@ -181,11 +237,12 @@ public class HomeView extends JFrame {
             Homestay homestay = selectedHomestay();
             new HomestayDetailView(this, homestay, roomController.byHomestay(homestay.id)).setVisible(true);
         }));
+        create.setVisible(user.role == UserRole.CUSTOMER || user.role == UserRole.OWNER || user.role == UserRole.ADMIN);
         JPanel actions = toolbar("Từ khóa", keyword, search, create, detail);
         return withActions(actions, tableScroll(homestayTable));
     }
 
-    private JPanel roomPanel() {
+    private JPanel roomPanel(User user) {
         JTextField keyword = input();
         JButton search = button("Tìm", true);
         JButton create = button("Tạo phòng", false);
@@ -203,18 +260,32 @@ public class HomeView extends JFrame {
             new CreateBookingDialog(this, bookingController, room.id, this::refreshAll).setVisible(true);
         }));
         review.addActionListener(event -> safe(() -> new CreateReviewDialog(this, reviewController, this::refreshAll).setVisible(true)));
+        create.setVisible(user.role == UserRole.OWNER || user.role == UserRole.ADMIN);
+        booking.setVisible(user.role == UserRole.CUSTOMER || user.role == UserRole.ADMIN);
+        review.setVisible(user.role == UserRole.CUSTOMER);
         JPanel actions = toolbar("Từ khóa", keyword, search, create, detail, booking, review);
         return withActions(actions, tableScroll(roomTable));
     }
 
-    private JPanel bookingPanel() {
+    private JPanel bookingPanel(User user) {
         JButton mine = button("Booking của tôi", true);
         JButton owner = button("Booking owner/admin", false);
-        JButton cancel = button("Mở bảng hủy/hoàn tất", false);
+        JButton manage = button("Mở bảng hủy/hoàn tất", false);
         mine.addActionListener(event -> safe(this::refreshMyBookings));
         owner.addActionListener(event -> safe(this::refreshOwnerBookings));
-        cancel.addActionListener(event -> safe(() -> new RoomBookingListView(this, bookingController, new ArrayList<>(bookings), this::refreshAll).setVisible(true)));
-        JPanel actions = toolbar(null, null, mine, owner, cancel);
+        manage.addActionListener(event -> safe(() -> {
+            if (bookings.isEmpty()) {
+                if (user.role == UserRole.CUSTOMER) {
+                    refreshMyBookings();
+                } else {
+                    refreshOwnerBookings();
+                }
+            }
+            new RoomBookingListView(this, bookingController, new ArrayList<>(bookings), this::refreshAll).setVisible(true);
+        }));
+        mine.setVisible(user.role == UserRole.CUSTOMER || user.role == UserRole.ADMIN);
+        owner.setVisible(user.role == UserRole.OWNER || user.role == UserRole.ADMIN);
+        JPanel actions = toolbar(null, null, mine, owner, manage);
         return withActions(actions, tableScroll(bookingTable));
     }
 
@@ -271,23 +342,58 @@ public class HomeView extends JFrame {
 
     private void refreshAll() {
         User user = userController.currentUser();
+        updateHeader(user);
+        renderContent(user);
+        clearTables();
         if (user == null) {
-            sessionLabel.setText("Khách - có thể xem homestay/phòng, đăng ký hoặc đăng nhập để đặt phòng");
-        } else {
-            sessionLabel.setText(user.fullname + " | " + user.role + " | Số dư: " + formatMoney(user.balance));
+            return;
         }
         refreshHomestays("");
         refreshRooms("");
-        bookings.clear();
-        bookingModel.setRowCount(0);
-        users.clear();
-        userModel.setRowCount(0);
-        if (user != null) {
+        if (user.role == UserRole.CUSTOMER) {
             safe(this::refreshMyBookings);
-            if (user.role == UserRole.ADMIN) {
-                safe(() -> refreshUsers(""));
-            }
+        } else {
+            safe(this::refreshOwnerBookings);
         }
+        if (user.role == UserRole.ADMIN) {
+            safe(() -> refreshUsers(""));
+        }
+    }
+
+    private void updateHeader(User user) {
+        if (user == null) {
+            sessionLabel.setText("Chưa đăng nhập - cần đăng nhập hoặc đăng ký để sử dụng hệ thống");
+            loginButton.setVisible(true);
+            registerButton.setVisible(true);
+            profileButton.setVisible(false);
+            logoutButton.setVisible(false);
+            reloadButton.setVisible(false);
+        } else {
+            sessionLabel.setText(user.fullname + " | " + user.role + " | Số dư: " + formatMoney(user.balance));
+            loginButton.setVisible(false);
+            registerButton.setVisible(false);
+            profileButton.setVisible(true);
+            logoutButton.setVisible(true);
+            reloadButton.setVisible(true);
+        }
+    }
+
+    private void renderContent(User user) {
+        contentPanel.removeAll();
+        contentPanel.add(user == null ? authPanel() : roleTabs(user), BorderLayout.CENTER);
+        contentPanel.revalidate();
+        contentPanel.repaint();
+    }
+
+    private void clearTables() {
+        homestays.clear();
+        rooms.clear();
+        bookings.clear();
+        users.clear();
+        homestayModel.setRowCount(0);
+        roomModel.setRowCount(0);
+        bookingModel.setRowCount(0);
+        userModel.setRowCount(0);
     }
 
     private void refreshHomestays(String keyword) {
@@ -408,6 +514,14 @@ public class HomeView extends JFrame {
             button.setForeground(TEXT);
         }
         return button;
+    }
+
+    private void openLogin() {
+        new LoginDialog(this, userController, this::refreshAll).setVisible(true);
+    }
+
+    private void openRegister() {
+        new RegisterDialog(this, userController, this::refreshAll).setVisible(true);
     }
 
     private String formatMoney(long amount) {
