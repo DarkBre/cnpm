@@ -82,7 +82,7 @@ public class HomeView extends JFrame {
 
     private final DefaultTableModel homestayModel = model("ID", "Tên", "Địa chỉ", "Loại", "Trạng thái");
     private final DefaultTableModel roomModel = model("ID", "Homestay", "Tên phòng", "Loại", "Sức chứa", "Trạng thái");
-    private final DefaultTableModel bookingModel = model("ID", "Phòng", "Check-in", "Check-out", "Số đêm", "Tổng tiền", "Trạng thái");
+    private final DefaultTableModel bookingModel = model("ID", "Phòng", "Check-in", "Check-out", "Số đêm", "Trạng thái");
     private final DefaultTableModel userModel = model("ID", "Họ tên", "Email", "Điện thoại", "Vai trò", "Trạng thái", "Số dư");
     private final JTable homestayTable = table(homestayModel);
     private final JTable roomTable = table(roomModel);
@@ -429,7 +429,7 @@ public class HomeView extends JFrame {
     private void refreshBookingTable() {
         bookingModel.setRowCount(0);
         for (Booking booking : bookings) {
-            bookingModel.addRow(new Object[]{booking.id, booking.roomId, booking.checkInDate, booking.checkOutDate, booking.totalNights, formatMoney(booking.totalAmount), booking.status});
+            bookingModel.addRow(new Object[]{booking.id, booking.roomId, booking.checkInDate, booking.checkOutDate, booking.totalNights, booking.status});
         }
     }
 
